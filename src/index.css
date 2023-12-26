@@ -40,6 +40,8 @@ code {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 1;
+  opacity: 100%;
 }
 
 .input__group {
@@ -54,4 +56,15 @@ code {
 .btn{
   display: block;
   margin: auto;
+}
+
+.logout__btn{
+  background-color: red;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  color:  white;
+  font-weight:  bold;
+  padding: 10px;
+  border: none;
 }

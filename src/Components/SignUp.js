@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const SignUp = () => {
+const SignUp = ({setToken}) => {
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -12,12 +12,20 @@ const SignUp = () => {
 
   function updateUserData(e) {
     // let key = e.target.name
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+    setUserData({ ...userData, [e.target.name]: e.target.value.trim() });
   }
 
   async function handleSignUp(e) {
     e.preventDefault();
+    if(!userData.name || !userData.email || !userData.password || !userData.cnfPassword ){
+      setDisplayMsg("Please fill all the fields completely")
+      return;
+    }
 
+    if(userData.password !== userData.cnfPassword){
+      setDisplayMsg("Password and confirm passwords do not match")
+      return;
+    }
     try {
       const response = await axios.post(
         "https://instagram-express-app.vercel.app/api/auth/signup",
@@ -31,6 +39,7 @@ const SignUp = () => {
       console.log("Success! : ", response.data.message);
       console.log("Status : ", response.status);
       setDisplayMsg(`Status ${response.status}: ${response.data.message}`);
+      setToken(response.data.data.token)
       setUserData({
         name: "",
         email: "",
@@ -52,10 +61,10 @@ const SignUp = () => {
       <form className="signUp-form" onSubmit={handleSignUp}>
         <h1 className="heading">Sign Up!</h1>
         <div className="input__group">
-          <label htmlFor="name">Name : </label>
+          <label htmlFor="name_signUp">Name : </label>
           <input
             type="text"
-            id="name"
+            id="name_signUp"
             name="name"
             placeholder="Enter your name"
             onChange={updateUserData}
@@ -64,10 +73,10 @@ const SignUp = () => {
         </div>
 
         <div className="input__group">
-          <label htmlFor="email">Email : </label>
+          <label htmlFor="email_signUp">Email : </label>
           <input
             type="email"
-            id="email"
+            id="email_signUp"
             name="email"
             placeholder="abc@xyz.com"
             onChange={updateUserData}
@@ -76,10 +85,10 @@ const SignUp = () => {
         </div>
 
         <div className="input__group">
-          <label htmlFor="password">Password : </label>
+          <label htmlFor="password_signUp">Password : </label>
           <input
             type="password"
-            id="password"
+            id="password_signUp"
             name="password"
             placeholder="Enter a Password..."
             onChange={updateUserData}
@@ -88,10 +97,10 @@ const SignUp = () => {
         </div>
 
         <div className="input__group">
-          <label htmlFor="cnfPassword">Confirm Password : </label>
+          <label htmlFor="cnfPassword_signUp">Confirm Password : </label>
           <input
             type="password"
-            id="cnfPassword"
+            id="cnfPassword_signUp"
             name="cnfPassword"
             placeholder="Re-enter the password..."
             onChange={updateUserData}

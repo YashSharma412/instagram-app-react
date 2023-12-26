@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const Login = () => {
+const Login = ({setToken}) => {
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -15,6 +15,9 @@ const Login = () => {
 
   async function handleLogin(e) {
     e.preventDefault();
+    if(!userData.email || !userData.password){
+      setDisplayMsg("Please fill all the input fields")
+    }
 
     try {
       const response = await axios.post(
@@ -28,6 +31,7 @@ const Login = () => {
       console.log("Success! : ", response.data.message);
       console.log("Status : ", response.status);
       setDisplayMsg(`Status ${response.status}: ${response.data.message}`);
+      setToken(response.data.data.token)
       setUserData({
         email: "",
         password: "",
