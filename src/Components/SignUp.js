@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
-const SignUp = ({setToken}) => {
+import UserContext from "../Context/UserContext";
+// 
+const SignUp = () => {
+  const { setToken} = useContext(UserContext)
+  const navigate = useNavigate();
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -9,6 +13,12 @@ const SignUp = ({setToken}) => {
     cnfPassword: "",
   });
   const [displayMsg, setDisplayMsg] = useState("");
+  useEffect(()=>{
+    let localTokenJSOn = localStorage.getItem("token");
+    if(localTokenJSOn != undefined){
+      navigate("/dashboard")
+    }
+  }, [])
 
   function updateUserData(e) {
     // let key = e.target.name
@@ -17,13 +27,18 @@ const SignUp = ({setToken}) => {
 
   async function handleSignUp(e) {
     e.preventDefault();
-    if(!userData.name || !userData.email || !userData.password || !userData.cnfPassword ){
-      setDisplayMsg("Please fill all the fields completely")
+    if (
+      !userData.name ||
+      !userData.email ||
+      !userData.password ||
+      !userData.cnfPassword
+    ) {
+      setDisplayMsg("Please fill all the fields completely");
       return;
     }
 
-    if(userData.password !== userData.cnfPassword){
-      setDisplayMsg("Password and confirm passwords do not match")
+    if (userData.password !== userData.cnfPassword) {
+      setDisplayMsg("Password and confirm passwords do not match");
       return;
     }
     try {
@@ -39,7 +54,13 @@ const SignUp = ({setToken}) => {
       console.log("Success! : ", response.data.message);
       console.log("Status : ", response.status);
       setDisplayMsg(`Status ${response.status}: ${response.data.message}`);
-      setToken(response.data.data.token)
+      setToken(response.data.data.token);
+      // add token to local storage
+      let jsonToken = JSON.stringify(response.data.data.token);
+      localStorage.setItem("token", jsonToken)
+      setTimeout(()=>{
+        navigate("/dashboard")
+      }, 1200)
       setUserData({
         name: "",
         email: "",
@@ -111,6 +132,14 @@ const SignUp = ({setToken}) => {
           Submit
         </button>
         {displayMsg && <h2>{displayMsg}</h2>}
+        <h4>
+          <center>
+            Already have an account?
+            <span style={{ color: "blue" }} onClick={() => navigate("/login")}>
+              Log in!
+            </span>
+          </center>
+        </h4>
       </form>
     </div>
   );

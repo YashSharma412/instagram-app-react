@@ -1,17 +1,20 @@
-import React,{useState} from "react";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+//
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import Dashboard from "./Components/Dashboard";
-//
+
 function App() {
 
-  const [token,setToken] = useState("");
-
+  // const [token,setToken] = useState("");
   return (
     <div className="App">
-      {/* <SignUp setToken = {setToken} /> */}
-      <Login setToken = {setToken} />
-      <Dashboard token={token} setToken = {setToken}/>
+      <Routes>
+        <Route path="/" element={<SignUp />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+        <Route path="/dashboard" element={<Dashboard/>}></Route>
+      </Routes>
       
     </div>
   );

@@ -1,8 +1,11 @@
-import React,{useEffect, useState} from "react";
+import React,{useEffect, useState, useContext} from "react";
 import axios from "axios";
+import UserContext from "../Context/UserContext";
+import { useNavigate } from "react-router-dom";
 
-const Logout = ({token, setToken, setMsgDisplay})=>{
-
+const Logout = ({setMsgDisplay})=>{
+    const navigate = useNavigate()
+    const {token, setToken} = useContext(UserContext)
     useEffect(()=>{
         console.log(`token: ${token}`)
     }, [token])
@@ -17,8 +20,11 @@ const Logout = ({token, setToken, setMsgDisplay})=>{
 
           console.log(`name: ${response.data.data.name} and email: ${response.data.data.email}, ${response.data.message}`)
           setMsgDisplay(response.data.message)
-          setToken(response.data.data.token)
-
+          localStorage.removeItem("token")
+          setToken("")
+            setTimeout(()=>{
+                navigate("/login")
+            }, 1200)
         }
         catch(err){
             console.log("Error in logout: ", err.response.data.message)
